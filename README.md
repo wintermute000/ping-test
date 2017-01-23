@@ -4,7 +4,8 @@ A pair of ansible play and python parse script to automate ping testing from mul
 It is assumed that the outputs are each device's stdout contents of ping command from ios_command native ansible module
 
 e.g. example ansible task to ping and store results per device using jinja template for formatting
-'''
+
+```
   - name: ping test
     ios_command:
       provider: "{{ provider }}"
@@ -14,14 +15,14 @@ e.g. example ansible task to ping and store results per device using jinja templ
     register: ping
 
   - template: src=./templates/ping.j2 dest=./show_outputs/{{ inventory_hostname }}.ping.output.txt
-'''
+```
 
 e.g. example jinja template
-'''
+```
 {% for p in ping.results %}
 {{ p.stdout }}
 {% endfor %}
-'''
+```
 
 #DEPENDENCIES
 - ansible 2.1+
@@ -34,7 +35,7 @@ e.g. example jinja template
 #CORRECT DEFINITIONS
 Define the correct ping results per device in ansible host_vars e.g.
 
-'''
+```
 ping_targets:
     - source: 4.4.4.4
       destination: 1.1.1.1
@@ -47,7 +48,7 @@ ping_targets:
       repeat: 3
       timeout: 2
       size: 1500
-'''
+```
 
 #PYTHON COMPONENTS
 - check-ping.py - checks the results of the ping tests defined in hostvars
@@ -57,9 +58,7 @@ The sample lab is defined in hostvars via standard ansible YAML. It consists of 
 Lab topology is provided as a png file in the repo.
 r4 is intentionally missing the configurations for Loopback88 (88.88.88.88/32) and the corresponding OSPF network statements.
 This has the following consequences:
-- THe interface Lo88 will come up as missing
-- A number of OSPF adjacencies will come up as missing as they are defined as 4.4.4.4 but r4 will use 88.88.88.88
-- routes to 88.88.88.88 are missing
+- The interface Lo88 will come up as missing
 - pings to 88.88.88.88 fails
 
 #USAGE
@@ -67,7 +66,7 @@ This has the following consequences:
 - run ping-test.py with appropriate variables defined
 
 #EXAMPLE: HOW TO USE
-'''
+```
     correct_path = "./host_vars"
 
     host_path = "./host_vars"
@@ -79,7 +78,7 @@ This has the following consequences:
     job = ping_test()
     hosts = job.generate_host_list(host_path,host_file)
     check_pings = job.parse_pings(hosts, show_path, ping_filename)
-'''
+```
 
 #EXAMPLE OUTPUTS
 - example-ping-play.txt - shows output of ansible ping tasks
